@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Celeste</title>
+<style>
+  body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #0b0b0b; color: #ffffff; }
+  header { display: flex; align-items: center; gap: 12px; padding: 18px 24px; background: #020617; position: relative; }
+  header img { width: 40px; height: 40px; }
+  header h2 { font-size: 1.5rem; font-weight: bold; color: #22c55e; margin: 0; }
+
+  /* Three-dot menu */
+  .menu-wrapper { margin-left: auto; position: relative; cursor: pointer; }
+  .menu-toggle { font-size: 2rem; color: #22c55e; user-select: none; }
+  .menu-dropdown { display: none; position: absolute; right: 0; top: 36px; background: #020617; border-radius: 8px; list-style: none; padding: 10px 0; box-shadow: 0 8px 25px rgba(0,0,0,0.6); min-width: 120px; z-index: 100; }
+  .menu-dropdown li { padding: 10px 20px; }
+  .menu-dropdown li a { color: #d1fae5; text-decoration: none; font-weight: bold; }
+  .menu-dropdown li:hover { background: #0f172a; }
+  .menu-wrapper.active .menu-dropdown { display: block; }
+
+  /* HERO SECTION */
+  .hero { text-align: center; padding: 80px 20px; background: radial-gradient(circle at top, #0f2f1f, #0b0b0b); }
+  .hero-title { font-size: 2.6rem; font-weight: bold; }
+  .hero-title span { color: #22c55e; }
+  .hero-subtitle { margin-top: 12px; font-size: 1.2rem; color: #86efac; }
+  .hero-text { margin: 24px auto; max-width: 650px; color: #d1fae5; font-size: 1rem; line-height: 1.7; }
+  .hero-media { margin-top: 40px; display: flex; flex-direction: column; align-items: center; }
+  .hero-media img { max-width: 350px; width: 100%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.7); margin-bottom: 24px; }
+
+  /* Animated Gradient Buttons */
+  @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+  .hero-btn, .plan-btn, .tech-btn { background: linear-gradient(270deg, #16a34a, #22c55e, #4ade80, #16a34a); background-size: 600% 600%; color: #052e16; font-weight: bold; font-size: 1.15rem; padding: 18px 50px; border-radius: 35px; text-decoration: none; box-shadow: 0 8px 25px rgba(0,0,0,0.6); transition: transform 0.2s, box-shadow 0.3s; animation: gradientShift 5s ease infinite; margin-bottom: 50px; }
+  .hero-btn:hover, .plan-btn:hover, .tech-btn:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.7); }
+
+  .offers-hero { padding: 50px 20px; background: #020617; }
+  .offers-hero h2 { text-align: center; color: #22c55e; margin-bottom: 30px; font-size: 2rem; font-weight: bold; }
+  .offers-hero ul { max-width: 700px; margin: auto; list-style: none; padding: 0; }
+  .offers-hero li { background: #0f172a; margin-bottom: 14px; padding: 18px 20px; border-radius: 14px; color: #d1fae5; font-size: 1rem; line-height: 1.6; }
+
+  .plans-section { padding: 70px 20px; max-width: 800px; margin: auto; text-align: center; }
+  .plans-section h2 { font-size: 2rem; color: #22c55e; margin-bottom: 40px; font-weight: bold; }
+  .plans { display: flex; flex-direction: column; gap: 30px; }
+  .plan-card { position: relative; background: #020617; padding: 35px 30px; border-radius: 22px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); text-align: center; transition: transform 0.3s, box-shadow 0.3s; }
+  .plan-card:hover { transform: translateY(-5px); box-shadow: 0 15px 50px rgba(0,0,0,0.7); }
+  .plan-card h3 { color: #22c55e; margin-bottom: 12px; font-size: 1.5rem; }
+  .price { font-size: 1.8rem; font-weight: bold; margin-bottom: 20px; }
+  .plan-card ul { list-style: none; padding: 0; margin-bottom: 20px; }
+  .plan-card ul li { padding: 10px 0; color: #d1fae5; font-size: 1rem; line-height: 1.6; }
+  .note { color: #86efac; font-size: 0.95rem; margin-bottom: 20px; }
+  .recommended-badge { position: absolute; top: -12px; right: 22px; background: linear-gradient(90deg, #22c55e, #4ade80); color: #052e16; padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+  .plan-card img { display: block; margin: 0 auto 20px; max-width: 400px; width: 90%; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+
+  #celeste-tech { text-align: center; margin-top: 50px; }
+  #celeste-tech h2 { color: #22c55e; font-size: 2rem; font-weight: bold; margin-bottom: 20px; }
+  #celeste-tech img { max-width: 400px; width: 90%; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+
+  .offers { padding: 60px 20px; background: #020617; }
+  .offers h2 { text-align: center; color: #22c55e; margin-bottom: 30px; }
+  .offers ul { max-width: 650px; margin: auto; list-style: none; padding: 0; }
+  .offers li { background: #0f172a; margin-bottom: 14px; padding: 16px 18px; border-radius: 14px; color: #d1fae5; font-size: 0.95rem; }
+
+  .register-now-section { text-align: center; padding: 60px 20px; background: #020617; }
+  .register-now-section h2 { color: #22c55e; font-size: 2rem; font-weight: bold; margin-bottom: 15px; }
+  .register-now-section p { color: #d1fae5; font-size: 1.1rem; margin-bottom: 25px; }
+
+  @media (min-width: 768px) { .plans { flex-direction: column; } }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="./asset/image/logo.png" alt="Celeste Logo"/>
+  <h2>Celeste</h2>
+
+  <!-- Three-dot menu -->
+  <div class="menu-wrapper">
+    <div class="menu-toggle">⋮</div>
+    <ul class="menu-dropdown">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#plans">Plans</a></li>
+      <li><a href="#register">Register</a></li>
+    </ul>
+  </div>
+</header>
+
+<section class="hero" id="hero">
+  <h1 class="hero-title">✨ Welcome to <span>Celeste</span></h1>
+  <p class="hero-subtitle">Experience Sustainable Financial Growth — Empower Your Future</p>
+  <p class="hero-text">
+    Celeste is a structured digital platform built to provide individuals
+    with access to verified earning opportunities, skill-based activities,
+    and innovative digital products. Our services are accessible to users
+    within and outside Nigeria.
+  </p>
+  <div class="hero-media">
+    <img src="./asset/image/Celeste.jpeg" alt="Celeste" />
+    <a href="#plans" class="hero-btn">Join Celeste Today</a>
+  </div>
+
+  <div class="offers-hero">
+    <h2>✨ What Celeste Has in Store for You!</h2>
+    <ul>
+      <li>▫️ High-demand skills to boost your expertise</li>
+      <li>▫️ Unlimited access to Celeste's digital products</li>
+      <li>▫️ Job opportunities with top international companies upon skill completion</li>
+      <li>▫️ Global rewards, recognition, and networking opportunities</li>
+      <li>▫️ Expert guidance from experienced coaches and instructors</li>
+      <li>▫️ Unlimited earning potential to achieve your financial goals</li>
+      <li>▫️ Potential to earn over ₦30,000 daily</li>
+    </ul>
+  </div>
+</section>
+
+<section class="plans-section" id="plans">
+  <h2>Choose Your Preferred Celeste Plan</h2>
+  <div class="plans">
+    <div class="plan-card">
+      <span class="recommended-badge">Recommended</span>
+      <h3>👑 Celeste Premium</h3>
+      <p class="price">₦14,500</p>
+      <img src="./asset/image/Celeste max.png" alt="Celeste Premium" />
+      <ul>
+        <li>(One-time access fee)</li>
+        <li>✅ Instant credit: €6 (₦12,000)</li>
+        <li>✅ Access to all tasks and bonuses</li>
+        <li>✅ Earn higher daily income</li>
+        <li>✅ Full access to premium features</li>
+        <li>✅ Withdraw daily</li>
+        <li>Daily Earning Potential: ₦20,000 – ₦30,000</li>
+      </ul>
+      <p class="note">💡 Potential to earn up to ₦30,000 daily.</p>
+      <a href="register.html?plan=Premium" class="plan-btn"> Celeste Premium</a>
+    </div>
+
+    <div class="plan-card">
+      <h3>💫 Celeste Lite</h3>
+      <p class="price">₦8,500</p>
+      <img src="./asset/image/Celeste lite.png" alt="Celeste Lite"/>
+      <ul>
+        <li>(One-time access fee)</li>
+        <li>✅ Instant credit: €4 (₦8,000)</li>
+        <li>✅ Access to limited tasks</li>
+        <li>✅ Lower earning potential</li>
+        <li>✅ Withdraw daily</li>
+        <li>Daily Earning Potential: ₦10,000 – ₦15,000</li>
+      </ul>
+      <a href="register.html?plan=Lite" class="plan-btn">Celeste Lite</a>
+    </div>
+  </div>
+  <p style="text-align:center; color:#d1fae5; font-size:1.1rem; margin-top:25px;">
+    The higher your package, the higher your earnings 🚀
+  </p>
+</section>
+
+<section id="celeste-tech">
+  <h2>Celeste Digital Experience 👨‍💻</h2>
+  <img src="./asset/image/Celeste game.jpeg" alt="Celeste Game" />
+</section>
+
+<section class="offers">
+  <h2>What Celeste Offers You</h2>
+  <ul>
+    <li>✔ Access to structured digital earning opportunities</li>
+    <li>✔ Skill-based activities designed for long-term growth</li>
+    <li>✔ Flexible earning structures based on subscription level</li>
+    <li>✔ Reliable and transparent payment system</li>
+    <li>✔ Opportunity to operate as a vendor or reseller</li>
+  </ul>
+</section>
+
+<section class="register-now-section" id="register">
+  <h2>Register and Get Instant Access</h2>
+  <p>Limited Access – Register Now</p>
+  <a href="register.html" class="hero-btn">Register Now</a>
+</section>
+
+<script>
+  const menuWrapper = document.querySelector('.menu-wrapper');
+  menuWrapper.addEventListener('click', () => { menuWrapper.classList.toggle('active'); });
+
+  // Smooth scroll for menu
+  document.querySelectorAll('.menu-dropdown a').forEach(link => {
+    link.addEventListener('click', e => {
+      const target = document.querySelector(link.getAttribute('href'));
+      if(target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+</script>
+
+</body>
+</html>

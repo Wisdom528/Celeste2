@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celeste Payment</title>
+
+<style>
+*{ box-sizing:border-box; }
+
+body{
+  background:#0b0b0b;
+  color:#e5e7eb;
+  font-family:Segoe UI, Tahoma, sans-serif;
+  padding:20px;
+}
+
+.container{
+  max-width:520px;
+  margin:0 auto;
+  text-align:center;
+}
+
+/* TIMER */
+.timer-box{
+  padding:16px;
+  border-radius:14px;
+  background:#0f172a;
+  margin-bottom:20px;
+}
+
+.timer-box h3{
+  margin:0;
+  font-size:14px;
+  color:#86efac;
+}
+
+#timer{
+  font-size:26px;
+  font-weight:bold;
+  color:#22c55e;
+  margin-top:6px;
+}
+
+/* NOTICE */
+.notice{
+  background:#fee2e2;
+  color:#7f1d1d;
+  padding:14px;
+  border-radius:12px;
+  margin-bottom:20px;
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* Intro */
+.intro{
+  margin-bottom:25px;
+  font-size:15px;
+  color:#d1fae5;
+}
+
+/* MERCHANT CARD */
+.card{
+  background:#111827;
+  border:1px solid #1f2937;
+  padding:18px;
+  border-radius:16px;
+  margin-bottom:18px;
+}
+
+.card h3{
+  margin:0 0 12px;
+  font-size:13px;
+  letter-spacing:1px;
+  color:#22c55e;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#020617;
+  padding:10px 12px;
+  border-radius:10px;
+  margin-bottom:10px;
+}
+
+.row span{
+  font-size:14px;
+  color:#e5e7eb;
+}
+
+/* COPY BUTTON */
+.copy-btn{
+  background:#16a34a;
+  color:#052e16;
+  border:none;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.copy-btn:hover{ opacity:0.9; }
+
+/* BUTTON */
+.btn{
+  margin-top:30px;
+  width:100%;
+  background:linear-gradient(135deg,#16a34a,#22c55e,#4ade80);
+  color:#052e16;
+  padding:16px;
+  border-radius:35px;
+  font-weight:bold;
+  font-size:1.05rem;
+  text-align:center;
+  cursor:pointer;
+  border:none;
+}
+
+.btn:disabled{
+  opacity:0.4;
+  cursor:not-allowed;
+}
+
+.btn:hover:not(:disabled){
+  transform:translateY(-2px);
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- TIMER -->
+  <div class="timer-box">
+    <h3>Complete your payment within</h3>
+    <div id="timer">10:00</div>
+  </div>
+
+  <!-- NOTICE -->
+  <div class="notice">
+    ⚠ Use narration like <b>Capital</b>, <b>Loan</b>, or <b>Support</b> when making payment.
+  </div>
+
+  <!-- INTRO -->
+  <p class="intro" id="introText">
+    Transfer the exact amount for your selected plan.
+  </p>
+
+  <!-- MERCHANT 1 -->
+  <div class="card">
+    <h3>MERCHANT 1</h3>
+    <div class="row"><span>Access Bank Nigeria</span><button class="copy-btn" onclick="copyText('Access Bank Nigeria')">Copy</button></div>
+    <div class="row"><span>1945494969</span><button class="copy-btn" onclick="copyText('1945494969')">Copy</button></div>
+    <div class="row"><span>DIVINE</span><button class="copy-btn" onclick="copyText('DIVINE')">Copy</button></div>
+  </div>
+
+   <!-- MERCHANT 1 -->
+  <div class="card">
+    <h3>MERCHANT 1</h3>
+    <div class="row"><span>OPAY</span><button class="copy-btn" onclick="copyText('OPAY')">Copy</button></div>
+    <div class="row"><span>9160049921</span><button class="copy-btn" onclick="copyText('9160049921')">Copy</button></div>
+    <div class="row"><span>Lucy Abanum</span><button class="copy-btn" onclick="copyText('Lucy Abanum')">Copy</button></div>
+  </div>
+
+  <!-- BUTTON -->
+  <button class="btn" id="paidBtn">
+    ✅ I have made the transfer
+  </button>
+
+</div>
+
+<script>
+/* COPY FUNCTION */
+function copyText(text){
+  navigator.clipboard.writeText(text);
+  alert("Copied: " + text);
+}
+
+/* GET PLAN & AMOUNT FROM URL */
+const urlParams = new URLSearchParams(window.location.search);
+const plan = urlParams.get("plan") || "Selected";
+const amount = urlParams.get("amount") || "Amount";
+
+document.getElementById("introText").innerHTML = `Transfer <b>₦${amount}</b> for your <b>${plan}</b> plan.`;
+
+/* TIMER */
+let time = 600; // 10 minutes
+const timerEl = document.getElementById("timer");
+const countdown = setInterval(() => {
+  let minutes = Math.floor(time/60);
+  let seconds = time%60;
+  timerEl.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  if(time <= 0){
+    clearInterval(countdown);
+    timerEl.textContent="Time Expired";
+    alert("Payment session expired. Please restart.");
+    document.getElementById("paidBtn").disabled = true;
+  }
+  time--;
+},1000);
+
+/* BUTTON CLICK - REDIRECT TO TELEGRAM */
+document.getElementById("paidBtn").onclick = function(){
+  const message = encodeURIComponent(`I have made paid for the ${plan} plan.`);
+  const telegramUrl = `https://t.me/Magnuspage?text=${message}`;
+  window.open(telegramUrl, "_blank");
+};
+</script>
+
+</body>
+</html>
