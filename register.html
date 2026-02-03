@@ -21,8 +21,17 @@ header {
   box-shadow: 0 4px 10px rgba(0,0,0,0.5);
 }
 
-header img { width: 40px; height: 40px; }
-header h2 { font-size: 1.5rem; font-weight: bold; color: #22c55e; margin-left: 12px; }
+header img {
+  width: 40px;
+  height: 40px;
+}
+
+header h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #22c55e;
+  margin-left: 12px;
+}
 
 .form-container {
   max-width: 500px;
@@ -38,7 +47,6 @@ header h2 { font-size: 1.5rem; font-weight: bold; color: #22c55e; margin-left: 1
   color: #22c55e;
   font-size: 2rem;
   margin-bottom: 30px;
-  font-weight: bold;
 }
 
 .form-group {
@@ -47,7 +55,7 @@ header h2 { font-size: 1.5rem; font-weight: bold; color: #22c55e; margin-left: 1
 
 .form-group label {
   display: block;
-  font-weight: bold;
+  font-weight: 600;
   margin-bottom: 8px;
   color: #86efac;
 }
@@ -68,7 +76,7 @@ header h2 { font-size: 1.5rem; font-weight: bold; color: #22c55e; margin-left: 1
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .checkbox-group input {
@@ -80,22 +88,20 @@ header h2 { font-size: 1.5rem; font-weight: bold; color: #22c55e; margin-left: 1
 .btn-submit {
   width: 100%;
   padding: 15px;
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: bold;
   border: none;
   border-radius: 35px;
   cursor: pointer;
-  background: linear-gradient(270deg, #16a34a, #22c55e, #4ade80, #16a34a);
-  background-size: 600% 600%;
+  background: linear-gradient(270deg, #16a34a, #22c55e, #4ade80);
   color: #052e16;
-  animation: gradientShift 5s ease infinite;
   margin-top: 25px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(34,197,94,0.4);
 }
 
 footer {
@@ -104,48 +110,6 @@ footer {
   font-size: 0.9rem;
   color: #86efac;
   margin-top: 40px;
-}
-
-/* Permit Key Modal */
-#permitModal {
-  display: none;
-  position: fixed;
-  top:0; left:0; right:0; bottom:0;
-  background: rgba(0,0,0,0.85);
-  justify-content:center;
-  align-items:center;
-  z-index:1000;
-}
-
-#permitModal .modal-content {
-  background:#0f172a;
-  padding:30px;
-  border-radius:16px;
-  max-width:400px;
-  width:90%;
-  text-align:center;
-}
-
-#permitModal input {
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  border-radius:12px;
-  border:none;
-  outline:none;
-  background:#1e293b;
-  color:#d1fae5;
-}
-
-#permitModal button {
-  margin-top:20px;
-  padding:14px 20px;
-  background:#22c55e;
-  color:#052e16;
-  font-weight:bold;
-  border:none;
-  border-radius:35px;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -201,34 +165,21 @@ footer {
 
     <div class="checkbox-group">
       <input type="checkbox" id="terms" required>
-      <label>I agree to the Terms and Conditions</label>
+      <label for="terms">I agree to the Terms and Conditions</label>
     </div>
 
-    <button class="btn-submit">Continue</button>
+    <button class="btn-submit" type="submit">Continue to Payment</button>
   </form>
 </div>
 
 <footer>
-  &copy; 2026 Celeste. All Rights Reserved
+  &copy; 2026 Celeste. All Rights Reserved.
 </footer>
 
-<!-- Permit Key Modal -->
-<div id="permitModal">
-  <div class="modal-content">
-    <h3>Enter Your Celeste Permit Key</h3>
-    <input type="text" id="permitKey" placeholder="Enter your permit key">
-    <button id="verifyKeyBtn">Verify & Continue</button>
-    <p style="margin-top:15px; color:#f87171;">Don't have a key? Contact <a href="https://t.me/Magnuspage" style="color:#facc15;">Coach</a> to get one.</p>
-  </div>
-</div>
-
 <script>
-const VALID_PERMIT_KEY = "4124";
-
 document.getElementById("registerForm").addEventListener("submit", function(e){
   e.preventDefault();
 
-  // Validate that all inputs are filled before showing permit
   const fullname = document.getElementById("fullname").value.trim();
   const username = document.getElementById("username").value.trim();
   const phone = document.getElementById("phone").value.trim();
@@ -238,7 +189,7 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
   const terms = document.getElementById("terms").checked;
 
   if(!fullname || !username || !phone || !email || !country || !plan){
-    alert("Please fill all fields before continuing.");
+    alert("Please complete all required fields.");
     return;
   }
 
@@ -247,29 +198,9 @@ document.getElementById("registerForm").addEventListener("submit", function(e){
     return;
   }
 
-  // All fields valid, show permit key modal
-  document.getElementById("permitModal").style.display = "flex";
-});
-
-// Verify Permit Key
-document.getElementById("verifyKeyBtn").addEventListener("click", function(){
-  const key = document.getElementById("permitKey").value.trim();
-  
-  if(key !== VALID_PERMIT_KEY){
-    alert("Wrong permit key. Please check and try again or contact support to get a valid key.");
-    return;
-  }
-
-  // Permit key correct, redirect with all info
-  const fullname = encodeURIComponent(document.getElementById("fullname").value);
-  const username = encodeURIComponent(document.getElementById("username").value);
-  const phone = encodeURIComponent(document.getElementById("phone").value);
-  const email = encodeURIComponent(document.getElementById("email").value);
-  const country = encodeURIComponent(document.getElementById("country").value);
-  const plan = encodeURIComponent(document.getElementById("plan").value);
   const amount = plan === "Premium" ? 14500 : 8500;
 
-  const query = `?fullname=${fullname}&username=${username}&phone=${phone}&email=${email}&country=${country}&plan=${plan}&amount=${amount}&permit=${key}`;
+  const query = `?fullname=${encodeURIComponent(fullname)}&username=${encodeURIComponent(username)}&phone=${encodeURIComponent(phone)}&email=${encodeURIComponent(email)}&country=${encodeURIComponent(country)}&plan=${encodeURIComponent(plan)}&amount=${amount}`;
   window.location.href = "payment.html" + query;
 });
 </script>
